@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Dashboard - SB Admin</title>
+        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+        <link href="{{ url_for('static', filename='css/styles.css')}}" rel="stylesheet" />
+        <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            <!-- Navbar Brand-->
+            <a class="navbar-brand ps-3" href="{{url_for('websiteController.index')}}">{{app_name}}</a>
+            <!-- Sidebar Toggle-->
+            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+            <!-- Navbar Search-->
+          
+            <!-- Navbar-->
+            <ul class="navbar-nav d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" href="">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">Core</div>
+                            <a class="nav-link" href="{{url_for('websiteController.dashboard')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt fa-2x"></i></div>
+                                Dashboard
+                            </a>
+                            <a class="nav-link" href="{{url_for('websiteController.symbols')}}">
+                                <div class="sb-nav-link-icon"><i class="fab fa-bitcoin fa-2x"></i></div>
+                                Symbols
+                            </a>
+                            <a class="nav-link" href="{{url_for('websiteController.configurations')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-gears fa-2x"></i></div>
+                                Configurations
+                            </a>
+                            <a class="nav-link"  href="{{url_for('websiteController.bot')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-robot fa-2x"></i></div>
+                                Manage Bot
+                            </a>
+                        </div>
+                    </div>
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Logged in as:</div>
+                        
+                    </div>
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+                <main>
+                    <div class="container-fluid px-4">
+                        <h1 class="mt-4">Configurations</h1>
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item active">Chnage the configuration of the bots</li>
+                        </ol>
+                    
+                      
+                          
+                        
+                        <div class="row">
+                            <div class="col-12 card mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-table me-1"></i>
+                                    Symbols followed
+                                </div>
+                                <div class="card-body">
+                                    <table id="datatablesSimple">
+                                        <thead>
+                                            <tr>
+                                                <th>symbol</th>
+                                                <th>config name</th>
+                                                <th>action</th>
+                                            </tr>
+                                        </thead>
+                                        <tfoot>
+                                            <tr>
+                                                
+                                                <th>symbol</th>
+                                                <th>config name</th>
+                                                <th>action</th>
+                                           
+                                            </tr>
+                                        </tfoot>
+                                        <tbody>
+                                            {% for item in data %}
+                                                    <tr>
+                                                        <td>{{ item.symbol }}</td>
+                                                        {% if item.symbol in config_symbols %}
+                                                            <td>{{ configs[config_symbols.index(item.symbol)]["name"] }}</td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal" 
+                                                                    id="{{ item.symbol }}" 
+                                                                    data-symbol="{{ item.symbol }}" 
+                                                                    data-config-name="{{ configs[config_symbols.index(item.symbol)]['name'] }}"
+                                                                    data-config-increase={{ configs[config_symbols.index(item.symbol)]['increase'] }}
+                                                                    data-config-decrease={{ configs[config_symbols.index(item.symbol)]['decrease'] }} 
+                                                                    data-founds={{ configs[config_symbols.index(item.symbol)]['funds'] }} >
+                                                                        Edit Config
+                                                                    </button>
+                                                            </td>
+                                                        {% else %}
+                                                            <td>Default</td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal"
+                                                                    id="{{ item.symbol }}" 
+                                                                    data-symbol="{{ item.symbol }}" 
+                                                                    data-config-name="Default"
+                                                                    data-config-increase=3 
+                                                                    data-config-decrease=5 
+                                                                    data-founds=10 >
+                                                                        Edit Config
+                                                                    </button>
+                                                            </td>
+                                                        {% endif %}
+                                                    </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                    </div>
+                </main>
+
+
+
+
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid px-4">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; Your Website 2022</div>
+                            <div>
+                                <a href="#">Privacy Policy</a>
+                                &middot;
+                                <a href="#">Terms &amp; Conditions</a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+
+
+
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel"></h5>
+                  <button type="button" class="close " data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <form method="post" action="{{url_for('websiteController.saveconfig')}}">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Config Name:</label>
+                            <input type="text" class="form-control" name="config_name" id="config_name">
+                            <input type="text" class="form-control" name="symbol" id="symbol" hidden>
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Percentage increase:</label>
+                            <input type="integer" class="form-control" name="percent_increase" id="percent_increase">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Percentage decrease:</label>
+                            <input type="int" class="form-control" name="percent_decrease" id="percent_decrease">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Funds Percentage:</label>
+                            <input type="int" class="form-control" name="percent_funds" id="percent_funds">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" value="Save changes">
+                    </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+
+
+
+
+        <script>
+
+            $('#exampleModal').on('show.bs.modal', function (event) {
+                
+            var button = document.getElementById((event.relatedTarget.id))
+            var symbol = button.getAttribute("data-symbol") 
+            var config_name = button.getAttribute("data-config-name")
+            var config_increase = button.getAttribute('data-config-increase') 
+            var config_decrease = button.getAttribute('data-config-decrease')
+            var config_founds = button.getAttribute('data-founds')
+
+            console.log(config_founds)
+          
+            var modal = $(this)
+            modal.find("#exampleModalLabel").text('Configuration of '+ symbol)
+            modal.find("#symbol").val(symbol)
+            modal.find("#config_name").val(config_name)
+            modal.find("#percent_increase").val(config_increase)
+            modal.find("#percent_decrease").val(config_decrease)
+            modal.find("#percent_funds").val(config_founds)
+            })
+
+        </script>
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='js/scripts.js')}}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='assets/demo/chart-area-demo.js')}}"></script>
+        <script src="{{ url_for('static', filename='assets/demo/chart-bar-demo.js')}}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='js/datatables-simple-demo.js')}}"></script>
+    </body>
+</html>
